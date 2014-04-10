@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<taskContextDescriptor
+	xmlns="http://been.d3s.mff.cuni.cz/task-context-descriptor"
+	xmlns:td="http://been.d3s.mff.cuni.cz/task-descriptor"
+	name="ExportJSON-context"
+>
+	<task>
+		<name>json-export</name>
+		<descriptor>
+			<fromTemplate>json-export-template</fromTemplate>
+		</descriptor>
+	</task>
+
+	<templates>
+		<template name="json-export-template">
+			<td:taskDescriptor groupId="cz.everbeen.processing" bpkId="export-json" name="data-processor-template" version="1.0.0">
+			</td:taskDescriptor>
+		</template>
+	</templates>
+</taskContextDescriptor>
