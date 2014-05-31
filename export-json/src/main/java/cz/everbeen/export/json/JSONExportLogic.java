@@ -25,6 +25,7 @@ public class JSONExportLogic implements DataProcessorLogic {
 	@Override
 	public EvaluatorResult process(Collection<Map<String, Object>> results, ProcessingConfiguration conf) throws DataProcessingException {
 		log.info("Json export configured with {}", conf.toString());
+		log.info("Fetched {} results", results.size());
 		return null;
 	}
 }

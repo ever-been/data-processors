@@ -65,6 +65,12 @@
 				<artifactId>benchmark-api</artifactId>
 				<version>${been.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>util</artifactId>
+				<version>${been.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -176,6 +182,8 @@
 
 	<modules>
 		<module>data-processing-commons</module>
+		<module>testing-data</module>
+		<module>dummy-data-generator</module>
 		<module>export-json</module>
 		<module>export-xml</module>
 	</modules>

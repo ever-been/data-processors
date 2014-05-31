@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<taskDescriptor
+	xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
+	name="dummy-data-generator"
+	groupId="cz.everbeen.processing"
+	bpkId="dummy-data-generator"
+	version="1.0.0-SNAPSHOT"
+>
+
+	<java>
+		<mainClass>cz.everbeen.testing.integration.DummyDataGenerator</mainClass>
+	</java>
+
+	<properties>
+		<property name="resultGroup" description="Targeted result group"/>
+		<property name="count" description="How many dummy results should be saved"/>
+	</properties>
+
+</taskDescriptor>
