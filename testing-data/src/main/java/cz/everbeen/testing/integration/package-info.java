@@ -3,4 +3,4 @@
  *
  * @author darklight
  */
-package main.java.cz.everbeen.testing.integration;
+package cz.everbeen.testing.integration;

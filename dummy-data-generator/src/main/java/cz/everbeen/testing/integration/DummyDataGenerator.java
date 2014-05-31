@@ -32,6 +32,7 @@ public class DummyDataGenerator extends Task {
 		final String group = propertyReader.getString(RESULT_GROUP, DEFAULT_RESULT_GROUP);
 
 		log.info("Dummy data generator engaged.");
+		log.info("Going to create {} dummy results in collection '{}'", count, group);
 
 		final Persister resultPersister = results.createResultPersister(group);
 		for (int i = 0; i < count; ++i) resultPersister.persist(DummyDataFactory.auth());
