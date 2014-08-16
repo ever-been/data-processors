@@ -36,6 +36,7 @@ public class DummyDataGenerator extends Task {
 
 		final Persister resultPersister = results.createResultPersister(group);
 		for (int i = 0; i < count; ++i) resultPersister.persist(DummyDataFactory.auth());
+		resultPersister.close();
 
 		log.info("Dummy data generator terminated.");
 	}
