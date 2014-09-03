@@ -6,7 +6,10 @@ import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
 import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
 import cz.cuni.mff.d3s.been.taskapi.Evaluator;
+import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.cuni.mff.d3s.been.taskapi.TaskException;
+import cz.cuni.mff.d3s.been.util.JSONUtils;
+import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
 import cz.everbeen.processing.configuration.ProcessingConfigurationParser;
 import org.slf4j.Logger;
@@ -38,9 +41,13 @@ public class DataProcessor extends Evaluator {
 
 		final ProcessingConfiguration pConf = logic.createConfig();
 		final ProcessingConfigurationParser pConfParser = new ProcessingConfigurationParser(this);
-		// TODO pConf must hold the type map at this point
-		final Map<String, Class<?>> typeMap = new TreeMap<String, Class<?>>();
 		pConfParser.parseProcessingConfiguration(pConf);
+		final ResultMapping resultMapping;
+		try {
+			resultMapping = JSONUtils.newInstance().deserialize(pConf.getFields(), ResultMapping.class);
+		} catch (JsonException e) {
+			throw new TaskException("Failed to deserialize type mapping", e);
+		}
 
 		final QueryBuilder qb = new QueryBuilder().on(new EntityID().withKind("result").withGroup(pConf.getGroupId()));
 		if (pConf.getFrom() != null) {
@@ -50,6 +57,6 @@ public class DataProcessor extends Evaluator {
 			qb.with("created").below(pConf.getTo());
 		}
 
-		return logic.process(results.query(qb.fetch(), typeMap), pConf);
+		return logic.process(results.query(qb.fetch(), resultMapping), resultMapping, pConf);
 	}
 }

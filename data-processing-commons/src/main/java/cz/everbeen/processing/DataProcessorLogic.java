@@ -1,6 +1,7 @@
 package cz.everbeen.processing;
 
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
+import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
 
 import java.util.Collection;
@@ -24,10 +25,11 @@ public interface DataProcessorLogic {
 	 * Do the processing logic
 	 *
 	 * @param results Results to process
+	 * @param mapping Mapping and aliases of the resulting collection
 	 * @param conf Parsed configuration
 	 *
 	 * @throws DataProcessingException
 	 */
-	EvaluatorResult process(Collection<Map<String, Object>> results, ProcessingConfiguration conf) throws DataProcessingException;
+	EvaluatorResult process(Collection<Map<String, Object>> results, ResultMapping mapping, ProcessingConfiguration conf) throws DataProcessingException;
 
 }

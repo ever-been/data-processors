@@ -25,7 +25,7 @@ public class ProcessingConfiguration {
 	private Long taskWarmupSkew;
 	@TaskProperty(name="contextWarmupSkew")
 	private Long contextWarmupSkew;
-	@TaskProperty(name="fields")
+	@TaskProperty(name="typeMapping")
 	private String fields;
 
 	public String getTaskId() {

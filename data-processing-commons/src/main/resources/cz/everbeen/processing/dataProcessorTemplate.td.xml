@@ -20,6 +20,6 @@
 		<property name="from" description="Date from which results should be selected"/>
 		<property name="to" description="Date to which results should be selected"/>
 		<property name="groupId" description="ID of the result group that should be used"/>
-		<property name="typeMapping" description="Runtime types of extracted "/>
+		<property name="typeMapping" description="Runtime types and aliases of extracted data"/>
 	</properties>
 </taskDescriptor>

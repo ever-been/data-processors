@@ -1,6 +1,7 @@
 package cz.everbeen.export.json;
 
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
+import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.everbeen.processing.DataProcessingException;
 import cz.everbeen.processing.DataProcessorLogic;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
@@ -23,7 +24,7 @@ public class JSONExportLogic implements DataProcessorLogic {
 	}
 
 	@Override
-	public EvaluatorResult process(Collection<Map<String, Object>> results, ProcessingConfiguration conf) throws DataProcessingException {
+	public EvaluatorResult process(Collection<Map<String, Object>> results, ResultMapping mapping, ProcessingConfiguration conf) throws DataProcessingException {
 		log.info("Json export configured with {}", conf.toString());
 		log.info("Fetched {} results", results.size());
 		return null;

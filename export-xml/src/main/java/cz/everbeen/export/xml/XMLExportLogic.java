@@ -3,6 +3,7 @@ package cz.everbeen.export.xml;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
+import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.cuni.mff.d3s.been.taskapi.Task;
 import cz.cuni.mff.d3s.been.taskapi.TaskException;
 import cz.everbeen.processing.DataProcessingException;
@@ -25,7 +26,7 @@ public class XMLExportLogic implements DataProcessorLogic {
 	}
 
 	@Override
-	public EvaluatorResult process(Collection<Map<String, Object>> results, ProcessingConfiguration conf) throws DataProcessingException {
+	public EvaluatorResult process(Collection<Map<String, Object>> results, ResultMapping mapping, ProcessingConfiguration conf) throws DataProcessingException {
 		log.info("XML Export configured with {}", conf.toString());
 		return null;
 	}
