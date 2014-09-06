@@ -44,10 +44,11 @@ public class DataProcessor extends Evaluator {
 		pConfParser.parseProcessingConfiguration(pConf);
 		final ResultMapping resultMapping;
 		try {
-			resultMapping = JSONUtils.newInstance().deserialize(pConf.getFields(), ResultMapping.class);
+			resultMapping = pConf.getFields() == null ? ResultMapping.empty() : JSONUtils.newInstance().deserialize(pConf.getFields(), ResultMapping.class);
 		} catch (JsonException e) {
 			throw new TaskException("Failed to deserialize type mapping", e);
 		}
+		log.info("Data processor configured with {}", pConf.toString());
 
 		final QueryBuilder qb = new QueryBuilder().on(new EntityID().withKind("result").withGroup(pConf.getGroupId()));
 		if (pConf.getFrom() != null) {
@@ -56,7 +57,14 @@ public class DataProcessor extends Evaluator {
 		if (pConf.getTo() != null) {
 			qb.with("created").below(pConf.getTo());
 		}
+		for (String key: resultMapping.getTypeMapping().keySet()) {
+			qb.retrieving(key);
+		}
 
-		return logic.process(results.query(qb.fetch(), resultMapping), resultMapping, pConf);
+		Collection<Map<String, Object>> resultCollection = results.query(qb.fetch(), resultMapping);
+		log.info("Received {} entries for processing", resultCollection.size());
+		final EvaluatorResult result = logic.process(resultCollection, resultMapping, pConf);
+		log.info("Logic '{}' processed entries into result '{}'", logic.getName(), result.getId());
+		return result;
 	}
 }

@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public interface DataProcessorLogic {
 
+	String getName();
+
 	/**
 	 * Create the configuration object fo this processing logic
 	 *

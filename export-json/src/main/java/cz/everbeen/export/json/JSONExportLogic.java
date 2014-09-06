@@ -5,18 +5,32 @@ import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.everbeen.processing.DataProcessingException;
 import cz.everbeen.processing.DataProcessorLogic;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Task that exports selected data to JSON.
+ *
+ * @author darklight
  */
 public class JSONExportLogic implements DataProcessorLogic {
 
-	private static final Logger log = LoggerFactory.getLogger(JSONExportLogic.class);
+	private static final SimpleDateFormat FILENAME_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS");
+
+	@Override
+	public String getName() {
+		return "expot-json";
+	}
 
 	@Override
 	public ProcessingConfiguration createConfig() {
@@ -25,8 +39,30 @@ public class JSONExportLogic implements DataProcessorLogic {
 
 	@Override
 	public EvaluatorResult process(Collection<Map<String, Object>> results, ResultMapping mapping, ProcessingConfiguration conf) throws DataProcessingException {
-		log.info("Json export configured with {}", conf.toString());
-		log.info("Fetched {} results", results.size());
-		return null;
+		final ByteArrayOutputStream bao = new ByteArrayOutputStream();
+		final JsonGenerator jgen;
+		try {
+			jgen = new JsonFactory().createJsonGenerator(new BufferedOutputStream(bao), JsonEncoding.UTF8);
+		} catch (IOException e) {
+			throw new DataProcessingException("Could not set up JSON generator", e);
+		}
+		final ObjectMapper om = new ObjectMapper();
+		try {
+			om.writeValue(jgen, results);
+		} catch (IOException e) {
+			throw new DataProcessingException("Failed to serialize result object", e);
+		}
+		try {
+			jgen.close();
+		} catch (IOException e) {
+			throw new DataProcessingException("Could not close result stream", e);
+		}
+		final Date creationDate = new Date();
+		final EvaluatorResult evaluatorResult = new EvaluatorResult();
+		evaluatorResult.setData(bao.toByteArray());
+		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_PLAIN);
+		evaluatorResult.setTimestamp(creationDate.getTime());
+		evaluatorResult.setFilename("export-json_" + FILENAME_DATE_FORMAT.format(creationDate) + ".json");
+		return evaluatorResult;
 	}
 }
