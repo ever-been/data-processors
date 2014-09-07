@@ -51,12 +51,11 @@ public class DataProcessor extends Evaluator {
 		log.info("Data processor configured with {}", pConf.toString());
 
 		final QueryBuilder qb = new QueryBuilder().on(new EntityID().withKind("result").withGroup(pConf.getGroupId()));
-		if (pConf.getFrom() != null) {
-			qb.with("created").above(pConf.getFrom());
-		}
-		if (pConf.getTo() != null) {
-			qb.with("created").below(pConf.getTo());
-		}
+		if (pConf.getFrom() != null) qb.with("created").above(pConf.getFrom());
+		if (pConf.getTo() != null) qb.with("created").below(pConf.getTo());
+		if (pConf.getTaskId() != null) qb.with("taskId", pConf.getTaskId());
+		if (pConf.getContextId() != null) qb.with("contextId", pConf.getContextId());
+		if (pConf.getBenchmarkId() != null) qb.with("benchmarkId", pConf.getBenchmarkId());
 		for (String key: resultMapping.getTypeMapping().keySet()) {
 			qb.retrieving(key);
 		}
