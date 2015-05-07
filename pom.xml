@@ -186,6 +186,7 @@
 		<module>dummy-data-generator</module>
 		<module>export-json</module>
 		<module>export-xml</module>
+		<module>export-csv</module>
 	</modules>
 
 	<distributionManagement>
