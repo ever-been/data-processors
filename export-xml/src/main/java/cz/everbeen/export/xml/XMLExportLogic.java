@@ -67,7 +67,7 @@ public class XMLExportLogic implements DataProcessorLogic {
 		evaluatorResult.setData(bao.toByteArray());
 		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_PLAIN);
 		evaluatorResult.setTimestamp(creationDate.getTime());
-		evaluatorResult.setFilename("export-xml" + FILENAME_DATE_FORMAT.format(creationDate) + ".xml");
+		evaluatorResult.setFilename("export-xml_" + FILENAME_DATE_FORMAT.format(creationDate) + ".xml");
 		return evaluatorResult;
 	}
 
