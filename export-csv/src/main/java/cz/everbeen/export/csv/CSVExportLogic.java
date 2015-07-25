@@ -87,7 +87,7 @@ public class CSVExportLogic implements DataProcessorLogic {
 		final Date creationDate = new Date();
 		final EvaluatorResult evaluatorResult = new EvaluatorResult();
 		evaluatorResult.setData(bao.toByteArray());
-		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_PLAIN);
+		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_CSV);
 		evaluatorResult.setTimestamp(creationDate.getTime());
 		evaluatorResult.setFilename("export-csv_" + FILENAME_DATE_FORMAT.format(creationDate) + ".csv");
 		return evaluatorResult;

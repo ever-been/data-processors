@@ -187,6 +187,8 @@
 		<module>export-json</module>
 		<module>export-xml</module>
 		<module>export-csv</module>
+		<module>aggregator</module>
+		<module>proc-chart</module>
 	</modules>
 
 	<distributionManagement>

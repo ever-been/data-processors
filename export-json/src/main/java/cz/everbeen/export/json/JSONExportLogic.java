@@ -60,7 +60,7 @@ public class JSONExportLogic implements DataProcessorLogic {
 		final Date creationDate = new Date();
 		final EvaluatorResult evaluatorResult = new EvaluatorResult();
 		evaluatorResult.setData(bao.toByteArray());
-		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_PLAIN);
+		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_JSON);
 		evaluatorResult.setTimestamp(creationDate.getTime());
 		evaluatorResult.setFilename("export-json_" + FILENAME_DATE_FORMAT.format(creationDate) + ".json");
 		return evaluatorResult;
