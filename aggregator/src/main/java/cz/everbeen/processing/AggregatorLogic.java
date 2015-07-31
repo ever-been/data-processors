@@ -1,7 +1,9 @@
 package cz.everbeen.processing;
 
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.DataSetResult;
+import cz.cuni.mff.d3s.been.results.PrimitiveType;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.aggregate.AggregatorConfiguration;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
 import org.codehaus.jackson.JsonEncoding;
@@ -82,7 +84,7 @@ public class AggregatorLogic implements DataProcessorLogic {
 		}
 		final ObjectMapper om = new ObjectMapper();
 		try {
-			om.writeValue(jgen, aggregatedResults);
+			om.writeValue(jgen, aggregatedResults.values());
 		} catch (IOException e) {
 			throw new DataProcessingException("Failed to serialize result object", e);
 		}
@@ -92,12 +94,30 @@ public class AggregatorLogic implements DataProcessorLogic {
 			throw new DataProcessingException("Could not close result stream", e);
 		}
 		final Date creationDate = new Date();
-		final EvaluatorResult evaluatorResult = new EvaluatorResult();
-		evaluatorResult.setData(bao.toByteArray());
-		evaluatorResult.setMimeType(EvaluatorResult.MIME_TYPE_JSON);
-		evaluatorResult.setTimestamp(creationDate.getTime());
-		evaluatorResult.setFilename("aggregate_" + FILENAME_DATE_FORMAT.format(creationDate) + ".json");
-		return evaluatorResult;
+		final DataSetResult dataSetResult = new DataSetResult();
+		dataSetResult.setPreserializedResultMapping(
+				calculateTargetMapping(concentratorMap, aggregatorMap).preSerialize()
+		);
+		dataSetResult.setData(bao.toByteArray());
+		dataSetResult.setMimeType(EvaluatorResult.MIME_TYPE_JSON);
+		dataSetResult.setTimestamp(creationDate.getTime());
+		dataSetResult.setFilename("aggregate_" + FILENAME_DATE_FORMAT.format(creationDate) + ".json");
+
+		return dataSetResult;
+	}
+
+	private ResultMapping calculateTargetMapping(
+			Map<String, Concentrator> concentrators,
+			Map<String, Aggregator> aggregators
+	) {
+		final Map<String, PrimitiveType> pTypes = new TreeMap<String, PrimitiveType>();
+		for (Concentrator c: concentrators.values()) {
+			pTypes.put(c.getColName(), PrimitiveType.STRING);
+		}
+		for (Aggregator a: aggregators.values()) {
+			pTypes.put(a.getColName(), a.getColType());
+		}
+		return ResultMapping.fromPtypes(pTypes);
 	}
 
 	private Map<String, Concentrator> createConcentrators(AggregatorConfiguration aConf, ReductorFactories reductorFactories) throws DataProcessingException {

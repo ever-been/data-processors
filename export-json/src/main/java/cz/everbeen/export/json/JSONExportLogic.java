@@ -1,7 +1,7 @@
 package cz.everbeen.export.json;
 
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.DataProcessingException;
 import cz.everbeen.processing.DataProcessorLogic;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;

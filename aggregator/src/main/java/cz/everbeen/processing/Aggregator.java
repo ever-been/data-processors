@@ -1,5 +1,7 @@
 package cz.everbeen.processing;
 
+import cz.cuni.mff.d3s.been.results.PrimitiveType;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,6 +34,20 @@ public interface Aggregator<VType> {
 	 * @param resultSet Result collection that will be processed next
 	 */
 	void initialize(Collection<Map<String, Object>> resultSet);
+
+	/**
+	 * Get the name of the dataset column this aggregator generates
+	 *
+	 * @return Column name
+	 */
+	String getColName();
+
+	/**
+	 * Get the type of values this aggregator generates
+	 *
+	 * @return Column type
+	 */
+	PrimitiveType getColType();
 
 	/**
 	 * Reset cached data, reinitializing precalculated aggregation values.

@@ -39,6 +39,11 @@ public class NormIntervalConcentrator<T extends Number> implements Concentrator<
 	}
 
 	@Override
+	public String getColName() {
+		return canonicalAggregateName;
+	}
+
+	@Override
 	public void reduce(Map<String, Object> sourceRecord, Map<String, Object> targetRecord) {
 		targetRecord.put(canonicalAggregateName, reduce((T) sourceRecord.get(fieldName)));
 	}

@@ -31,8 +31,8 @@
 	<xsl:template match="td:properties">
 		<td:properties>
 			<xsl:apply-templates select="@*|*"/>
-			<td:property name="concentratorFields" description="Comma-separated list of fields which should be used as concentrators (analogous to GROUP BY clause'. Either use field name as is, or one of following functions: norm(VARNAME,X), range(VARNAME,S1,S2,...) - VARNAME is the name of concentration variable, X is the number of intervals to divide in, Sn is the value of n-th separator. Separator type will be derived from type mapping. E.g.: range(myVar,3,5) will separate numeric data from myVar into three aggregated rows: myvar &lt; 3; 3 &lt;= myVar &lt; 5; 5 &lt;= myVar"/>
-			<td:property name="aggregatorFields" description="Comma-separated list of fields which should be aggregated. Use field name or following functions: avg(VARNAME), min(VARNAME), max(VARNAME), sum(VARNAME), med(VARNAME)"/>
+			<td:property name="concentratorFields" description="Comma-separated list of typeMapping which should be used as concentrators (analogous dateTo GROUP BY clause'. Either use field name as is, or one of following functions: norm(VARNAME,X), range(VARNAME,S1,S2,...) - VARNAME is the name of concentration variable, X is the number of intervals dateTo divide in, Sn is the value of n-th separator. Separator type will be derived dateFrom type mapping. E.g.: range(myVar,3,5) will separate numeric data dateFrom myVar into three aggregated rows: myvar &lt; 3; 3 &lt;= myVar &lt; 5; 5 &lt;= myVar"/>
+			<td:property name="aggregatorFields" description="Comma-separated list of typeMapping which should be aggregated. Use field name or following functions: avg(VARNAME), min(VARNAME), max(VARNAME), sum(VARNAME), med(VARNAME)"/>
 		</td:properties>
 	</xsl:template>
 </xsl:stylesheet>

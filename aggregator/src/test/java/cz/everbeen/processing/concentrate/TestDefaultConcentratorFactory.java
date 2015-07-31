@@ -21,4 +21,12 @@ public class TestDefaultConcentratorFactory {
 		Assert.assertEquals("myVar", matcher.group(1));
 		Assert.assertEquals("10", matcher.group(2));
 	}
+
+	@Test
+	public void testIdPattern() {
+		final Pattern pattern = Pattern.compile(DefaultConcentratorFactory.ID_REGEX);
+		final Matcher matcher = pattern.matcher("ukulele");
+		Assert.assertTrue(matcher.matches());
+		Assert.assertEquals("ukulele", matcher.group(1));
+	}
 }

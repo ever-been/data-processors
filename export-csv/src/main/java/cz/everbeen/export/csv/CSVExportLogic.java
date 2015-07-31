@@ -1,19 +1,17 @@
 package cz.everbeen.export.csv;
 
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.DataProcessingException;
 import cz.everbeen.processing.DataProcessorLogic;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

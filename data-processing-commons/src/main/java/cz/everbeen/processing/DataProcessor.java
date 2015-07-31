@@ -1,21 +1,18 @@
 package cz.everbeen.processing;
 
-import cz.cuni.mff.d3s.been.core.persistence.EntityID;
 import cz.cuni.mff.d3s.been.evaluators.EvaluatorResult;
 import cz.cuni.mff.d3s.been.mq.MessagingException;
 import cz.cuni.mff.d3s.been.persistence.DAOException;
-import cz.cuni.mff.d3s.been.persistence.QueryBuilder;
+import cz.cuni.mff.d3s.been.taskapi.DataSet;
 import cz.cuni.mff.d3s.been.taskapi.Evaluator;
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
 import cz.cuni.mff.d3s.been.taskapi.TaskException;
-import cz.cuni.mff.d3s.been.util.JSONUtils;
-import cz.cuni.mff.d3s.been.util.JsonException;
 import cz.everbeen.processing.configuration.ProcessingConfiguration;
 import cz.everbeen.processing.configuration.ProcessingConfigurationParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 /**
  * A generic data processor task. Implements the base functionality of data extraction.
@@ -42,27 +39,21 @@ public class DataProcessor extends Evaluator {
 		final ProcessingConfiguration pConf = logic.createConfig();
 		final ProcessingConfigurationParser pConfParser = new ProcessingConfigurationParser(this);
 		pConfParser.parseProcessingConfiguration(pConf);
-		final ResultMapping resultMapping;
-		try {
-			resultMapping = pConf.getFields() == null ? ResultMapping.empty() : JSONUtils.newInstance().deserialize(pConf.getFields(), ResultMapping.class);
-		} catch (JsonException e) {
-			throw new TaskException("Failed to deserialize type mapping", e);
-		}
 		log.info("Data processor configured with {}", pConf.toString());
 
-		final QueryBuilder qb = new QueryBuilder().on(new EntityID().withKind("result").withGroup(pConf.getGroupId()));
-		if (pConf.getFrom() != null) qb.with("created").above(pConf.getFrom());
-		if (pConf.getTo() != null) qb.with("created").below(pConf.getTo());
-		if (pConf.getTaskId() != null) qb.with("taskId", pConf.getTaskId());
-		if (pConf.getContextId() != null) qb.with("contextId", pConf.getContextId());
-		if (pConf.getBenchmarkId() != null) qb.with("benchmarkId", pConf.getBenchmarkId());
-		for (String key: resultMapping.getTypeMapping().keySet()) {
-			qb.retrieving(key);
+		final DataSet dataSet;
+		if (pConf.isLoadingDataset()) {
+			dataSet = new DatasetLoader(results).loadDataset(pConf);
+		} else {
+			dataSet = new QueryLoader(results).loadDataset(pConf);
 		}
 
-		Collection<Map<String, Object>> resultCollection = results.query(qb.fetch(), resultMapping);
-		log.info("Received {} entries for processing", resultCollection.size());
-		final EvaluatorResult result = logic.process(resultCollection, resultMapping, pConf);
+		log.info("Received {} entries for processing", dataSet.getData().size());
+		final EvaluatorResult result = logic.process(
+				dataSet.getData(),
+				dataSet.getResultMapping(),
+				pConf
+		);
 		log.info("Logic '{}' processed entries into result '{}'", logic.getName(), result.getId());
 		return result;
 	}

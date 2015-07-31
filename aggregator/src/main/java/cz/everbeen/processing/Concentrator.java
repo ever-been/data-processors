@@ -34,6 +34,13 @@ public interface Concentrator<T> {
 	void initialize(Collection<Map<String, Object>> resultSet);
 
 	/**
+	 * Get the name of dataset column this concentrator generates
+	 *
+	 * @return Column name
+	 */
+	String getColName();
+
+	/**
 	 * Reset the configuration to initial state, discarding all setup and bringing it to the same state in which it would be freshly after instantiation.
 	 */
 	void reset();

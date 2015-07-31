@@ -1,6 +1,6 @@
 package cz.everbeen.processing;
 
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.aggregate.AggregatorSetupException;
 
 /**

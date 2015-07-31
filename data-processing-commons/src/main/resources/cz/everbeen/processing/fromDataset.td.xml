@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<taskDescriptor
+	xmlns="http://been.d3s.mff.cuni.cz/task-descriptor"
+	name="data-processor-template"
+	groupId="cz.everbeen.processing"
+	bpkId="data-processing-commons"
+	version="1.0.0-SNAPSHOT"
+>
+
+	<java>
+		<mainClass>cz.everbeen.processing.DataProcessor</mainClass>
+	</java>
+
+	<properties>
+		<property name="datasetId" description="The resultId of the dataset dateTo load. Datasets are results of previous exports/processing."/>
+	</properties>
+</taskDescriptor>

@@ -1,6 +1,7 @@
 package cz.everbeen.processing;
 
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 
 import java.util.*;
 
@@ -71,7 +72,7 @@ class ReductorFactories {
 		while (fit.hasNext()) {
 			final ConcentratorFactory f = fit.next();
 			// order negative, highest priorities will be stored first
-			concentratorFactories.put(- f.loadPriority(), f);
+			concentratorFactories.put(-f.loadPriority(), f);
 		}
 	}
 }

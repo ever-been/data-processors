@@ -1,6 +1,8 @@
 package cz.everbeen.processing.configuration;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Generic configuration for an export task
@@ -15,18 +17,26 @@ public class ProcessingConfiguration {
 	private String contextId;
 	@TaskProperty(name="benchmarkId")
 	private String benchmarkId;
-	@TaskProperty(name="from")
-	private Date from;
-	@TaskProperty(name="to")
-	private Date to;
+	@TaskProperty(name="dateFrom")
+	private Date dateFrom;
+	@TaskProperty(name="dateTo")
+	private Date dateTo;
 	@TaskProperty(name="groupId")
 	private String groupId;
-	@TaskProperty(name="taskWarmupSkew")
-	private Long taskWarmupSkew;
-	@TaskProperty(name="contextWarmupSkew")
-	private Long contextWarmupSkew;
 	@TaskProperty(name="typeMapping")
-	private String fields;
+	private String typeMapping;
+	@TaskProperty(name = "aliasMapping")
+	private String aliasMapping;
+	@TaskProperty(name = "datasetId")
+	private String datasetId;
+
+	public String getDatasetId() {
+		return datasetId;
+	}
+
+	public void setDatasetId(String datasetId) {
+		this.datasetId = datasetId;
+	}
 
 	public String getTaskId() {
 		return taskId;
@@ -52,20 +62,20 @@ public class ProcessingConfiguration {
 		this.benchmarkId = benchmarkId;
 	}
 
-	public Date getFrom() {
-		return from;
+	public Date getDateFrom() {
+		return dateFrom;
 	}
 
-	public void setFrom(Date from) {
-		this.from = from;
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
 	}
 
-	public Date getTo() {
-		return to;
+	public Date getDateTo() {
+		return dateTo;
 	}
 
-	public void setTo(Date to) {
-		this.to = to;
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
 
 	public String getGroupId() {
@@ -76,28 +86,35 @@ public class ProcessingConfiguration {
 		this.groupId = groupId;
 	}
 
-	public Long getTaskWarmupSkew() {
-		return taskWarmupSkew;
+	public String getTypeMapping() {
+		return typeMapping;
 	}
 
-	public void setTaskWarmupSkew(Long taskWarmupSkew) {
-		this.taskWarmupSkew = taskWarmupSkew;
+	public void setTypeMapping(String typeMapping) {
+		this.typeMapping = typeMapping;
 	}
 
-	public Long getContextWarmupSkew() {
-		return contextWarmupSkew;
+	public String getAliasMapping() {
+		return aliasMapping;
 	}
 
-	public void setContextWarmupSkew(Long contextWarmupSkew) {
-		this.contextWarmupSkew = contextWarmupSkew;
+	public void setAliasMapping(String aliasMapping) {
+		this.aliasMapping = aliasMapping;
 	}
 
-	public String getFields() {
-		return fields;
+	public Map<String, String> parseTypeMapping() throws ConfigException {
+		if (typeMapping == null || "".equals(typeMapping)) return new TreeMap<String, String>();
+		return arrowsplit(barsplit(typeMapping));
 	}
 
-	public void setFields(String fields) {
-		this.fields = fields;
+	public Map<String, String> parseAliasMapping() throws ConfigException {
+		if (aliasMapping == null || "".equals(aliasMapping)) return new TreeMap<String, String>();
+		return arrowsplit(barsplit(aliasMapping));
+	}
+
+
+	public boolean isLoadingDataset() {
+		return datasetId != null;
 	}
 
 	public String toString() {
@@ -115,29 +132,44 @@ public class ProcessingConfiguration {
 		sb.append(taskId);
 		sb.append(',');
 
-		sb.append("from = ");
-		sb.append(from);
+		sb.append("dateFrom = ");
+		sb.append(dateFrom);
 		sb.append(',');
 
-		sb.append("to = ");
-		sb.append(to);
-		sb.append(',');
-
-		sb.append("taskWarmupSkew = ");
-		sb.append(taskWarmupSkew);
-		sb.append(',');
-
-		sb.append("contextWarmupSkew = ");
-		sb.append(contextWarmupSkew);
+		sb.append("dateTo = ");
+		sb.append(dateTo);
 		sb.append(',');
 
 		sb.append("groupId = ");
 		sb.append(groupId);
 		sb.append(',');
 
-		sb.append("fields = ");
-		sb.append(fields);
+		sb.append("typeMapping = ");
+		sb.append(typeMapping);
+		sb.append(',');
+
+		sb.append("aliasMapping = ");
+		sb.append(aliasMapping);
 
 		return sb.toString();
+	}
+
+	String [] barsplit(String barSeparatedText) throws ConfigException {
+		final String [] segments = barSeparatedText.split("\\|");
+		for (int i = 0; i < segments.length; ++i) segments[i] = segments[i].trim();
+		return segments;
+	}
+
+	Map<String, String> arrowsplit(String [] mappings) throws ConfigException {
+		final Map<String, String> map = new TreeMap<String, String>();
+		for (String mapping: mappings) {
+			final String [] lr = mapping.split("->");
+			if (lr.length != 2) throw new ConfigException(String.format(
+					"Illegal mapping: [%s]",
+					mapping
+			));
+			map.put(lr[0].trim(), lr[1].trim());
+		}
+		return map;
 	}
 }

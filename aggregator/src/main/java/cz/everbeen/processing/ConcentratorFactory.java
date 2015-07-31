@@ -1,6 +1,6 @@
 package cz.everbeen.processing;
 
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.concentrate.ConcentratorSetupException;
 
 /**
@@ -35,7 +35,7 @@ public interface ConcentratorFactory {
 	 *
 	 * @return Concentrator instance evaluating given expression
 	 *
-	 * @throws ConcentratorSetupException When no concentratro can be instantiated for given expression
+	 * @throws ConcentratorSetupException When no concentrator can be instantiated for given expression
 	 */
 	Concentrator forAlias(
 			String expression,

@@ -18,6 +18,7 @@ import java.util.Date;
  * @author darklight
  */
 public final class ProcessingConfigurationParser {
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	private static final Logger log = LoggerFactory.getLogger(ProcessingConfigurationParser.class);
 
@@ -75,7 +76,7 @@ public final class ProcessingConfigurationParser {
 				field.set(conf, Double.valueOf(propString));
 			}
 			if (Date.class.equals(field.getType())) {
-				final DateFormat format = SimpleDateFormat.getInstance();
+				final DateFormat format = new SimpleDateFormat(DATE_FORMAT);
 				try {
 					field.set(conf, format.parse(propString));
 				} catch (ParseException e) {

@@ -81,7 +81,8 @@
 				</executions>
 				<configuration>
 					<taskDescriptors>
-						<param>target/generated-resources/xml/xslt/dataProcessorTemplate.td.xml</param>
+						<param>target/generated-resources/xml/xslt/fromResults.td.xml</param>
+						<param>target/generated-resources/xml/xslt/fromDataset.td.xml</param>
 					</taskDescriptors>
 				</configuration>
 			</plugin>

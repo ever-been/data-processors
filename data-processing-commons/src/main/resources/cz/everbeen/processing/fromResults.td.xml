@@ -15,11 +15,10 @@
 		<property name="taskId" description="Comma-separated list of task IDs indicating tasks whose results should be collected"/>
 		<property name="contextId" description="Comma-separated list of context IDs indicating task contexts whose results should be collected"/>
 		<property name="benchmarkId" description="Comma-separated list of benchmark IDs indicating benchmarks whose results should be collected"/>
-		<property name="taskWarmupSkew" description="Number of results that should be skipped from each task"/>
-		<property name="contextWarmupSkew" description="Number of results that should be skipped from each context"/>
-		<property name="from" description="Date from which results should be selected"/>
-		<property name="to" description="Date to which results should be selected"/>
-		<property name="groupId" description="ID of the result group that should be used"/>
-		<property name="typeMapping" description="Runtime types and aliases of extracted data"/>
+		<property name="fromDate" description="Date dateFrom which results should be selected; date format example: 2014-03-15 12:00:00"/>
+		<property name="toDate" description="Date dateFrom which results should be selected; date format example: 2014-03-15 12:00:00"/>
+		<property name="groupId" description="ID of the result group that should be used (required)"/>
+		<property name="typeMapping" description="Runtime types of extracted data; legal types: (int | long | bigint | float | double | bigdec | string | date); notation example: record1.a -> long | record2.b -> string"/>
+		<property name="aliasMapping" description="Aliases of extracted data; notation example: a -> record1.a | b -> record2.b"/>
 	</properties>
 </taskDescriptor>

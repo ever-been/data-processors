@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Aggregator that sums values
+ * Averaging aggregator implementation
  *
  * @author darklight
  */
-class SumAggregator<T extends Number> implements Aggregator<T> {
+public class AvgAggregator<T extends Number> implements Aggregator<T> {
 
 	private final Arithmetics<T> au;
 
@@ -22,12 +22,13 @@ class SumAggregator<T extends Number> implements Aggregator<T> {
 	private final String [] groupingColNames;
 
 	private AggregatedDataCube<T> sumCube;
+	private AggregatedDataCube<Integer> countCube;
 
 	/**
-	 * Create sum aggregator,
+	 * Create avg aggregator,
 	 * @param groupingColNames
 	 */
-	public SumAggregator(
+	public AvgAggregator(
 			Arithmetics<T> au,
 			String aggregatedFieldName,
 			PrimitiveType aggregationPType,
@@ -35,11 +36,12 @@ class SumAggregator<T extends Number> implements Aggregator<T> {
 	) {
 		this.au = au;
 		this.aggregatedFieldName = aggregatedFieldName;
-		this.canonicalAggrName = String.format("sum(%s)", aggregatedFieldName);
+		this.canonicalAggrName = String.format("avg(%s)", aggregatedFieldName);
 		this.aggregationPType = aggregationPType;
 		this.groupingColNames = groupingColNames;
 
 		this.sumCube = new AggregatedDataCube<T>();
+		this.countCube = new AggregatedDataCube<Integer>();
 	}
 
 	@Override
@@ -58,13 +60,20 @@ class SumAggregator<T extends Number> implements Aggregator<T> {
 		T sum = sumCube.getValue(reducedResult, groupingColNames);
 		sum = (sum == null) ? value : au.add(sum, value);
 		sumCube.setValue(reducedResult, groupingColNames, sum);
+
+		Integer count = countCube.getValue(reducedResult, groupingColNames);
+		count = (count == null) ? 1 : count + 1;
+		countCube.setValue(reducedResult, groupingColNames, count);
 	}
 
 	@Override
 	public void writeAggregatedValue(Map<String, Object> reducedResult) {
 		final T sum = sumCube.getValue(reducedResult, groupingColNames);
-		if (sum == null) return;
-		reducedResult.put(canonicalAggrName, sum);
+		if (sum == null) return; // not interested in calculating null / null
+		reducedResult.put(canonicalAggrName, au.div(
+				sum,
+				countCube.getValue(reducedResult, groupingColNames)
+		));
 	}
 
 	@Override
@@ -75,5 +84,6 @@ class SumAggregator<T extends Number> implements Aggregator<T> {
 	@Override
 	public void reset() {
 		sumCube.clear();
+		countCube.clear();
 	}
 }

@@ -1,6 +1,8 @@
 package cz.everbeen.processing.concentrate;
 
-import cz.cuni.mff.d3s.been.taskapi.ResultMapping;
+import cz.cuni.mff.d3s.been.results.PrimitiveType;
+import cz.cuni.mff.d3s.been.results.PrimitiveTypeException;
+import cz.cuni.mff.d3s.been.results.ResultMapping;
 import cz.everbeen.processing.Concentrator;
 import cz.everbeen.processing.ConcentratorFactory;
 import cz.everbeen.processing.arithmetics.Arithmetics;
@@ -19,7 +21,8 @@ import java.util.regex.Pattern;
  */
 public class DefaultConcentratorFactory implements ConcentratorFactory {
 
-	static final String NORM_REGEX = "norm\\(([a-zA-Z_]*), *([0-9]+)\\)";
+	static final String NORM_REGEX = "norm\\(([a-zA-Z_]+), *([0-9]+)\\)";
+	static final String ID_REGEX = "([a-zA-Z_]+)";
 
 	@Override
 	public int loadPriority() {
@@ -37,12 +40,20 @@ public class DefaultConcentratorFactory implements ConcentratorFactory {
 		final Matcher normMatcher = Pattern.compile(NORM_REGEX).matcher(expression);
 		if (normMatcher.matches()) {
 			final String varName = normMatcher.group(1);
+			assertVariablesExist(resultMapping, varName);
 			final Integer intervalCount = Integer.valueOf(normMatcher.group(2));
 			return new NormIntervalConcentrator(
 					instantiateArithmetics(resultMapping, varName),
 					varName,
 					intervalCount
 			);
+		}
+
+		final Matcher idMatcher = Pattern.compile(ID_REGEX).matcher(expression);
+		if (idMatcher.matches()) {
+			final String varName = idMatcher.group(1);
+			assertVariablesExist(resultMapping, varName);
+			return new IdConcentrator(varName);
 		}
 
 		// TODO matchers for more arithmetics types
@@ -55,18 +66,48 @@ public class DefaultConcentratorFactory implements ConcentratorFactory {
 	Map<String, Pattern> getPatterns() {
 		final Map<String, Pattern> patterns = new TreeMap<String,Pattern>();
 		patterns.put(NORM_REGEX, Pattern.compile(NORM_REGEX));
+		patterns.put(ID_REGEX, Pattern.compile(ID_REGEX));
 		return patterns;
 	}
 
 	private Arithmetics<? extends Number> instantiateArithmetics(ResultMapping resultMapping, String fieldName) throws ConcentratorSetupException {
-		final Class<? extends Number> aggrValueClass = (Class<? extends Number>) resultMapping.typeForName(fieldName);
+		final PrimitiveType arithmeticsType;
 		try {
-			return ArithmeticsFactory.newInstance(aggrValueClass);
+			arithmeticsType = PrimitiveType.fromTypeAlias(resultMapping.typeForName(fieldName));
+		} catch (PrimitiveTypeException e) {
+			throw new ConcentratorSetupException("Invalid type mapping", e);
+		}
+		if (!arithmeticsType.isNumeric())
+			throw new ConcentratorSetupException(String.format(
+					"Type [%s] is not numeric",
+					arithmeticsType.getTypeAlias()
+			));
+		try {
+			return ArithmeticsFactory.newInstance(
+					(Class<? extends Number>) arithmeticsType.getPrimitiveClass()
+			);
 		} catch (ArithmeticsConfigurationException e) {
 			throw new ConcentratorSetupException(String.format(
 					"Failed to setup arithmetics unit for type [%s]",
-					aggrValueClass == null ? "null" : aggrValueClass.getCanonicalName()
+					arithmeticsType.getPrimitiveClass().getCanonicalName()
 			), e);
+		}
+	}
+
+	/**
+	 * Utility method that checks whether all variables used in matched expression are present in the type mapping.
+	 *
+	 * @param resultMapping Mapping
+	 * @param variables Variables to validate
+	 *
+	 * @throws ConcentratorSetupException When one of the variables is found not to exist
+	 */
+	private void assertVariablesExist(ResultMapping resultMapping, String... variables) throws ConcentratorSetupException {
+		for (String var: variables) {
+			if (resultMapping.typeForName(var) == null) throw new ConcentratorSetupException(String.format(
+					"Variable [%s] not declared",
+					var
+			));
 		}
 	}
 }
