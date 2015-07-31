@@ -31,8 +31,8 @@
 	<xsl:template match="td:properties">
 		<td:properties>
 			<xsl:apply-templates select="@*|*"/>
-			<td:property name="concentratorFields" description="Comma-separated list of typeMapping which should be used as concentrators (analogous dateTo GROUP BY clause'. Either use field name as is, or one of following functions: norm(VARNAME,X), range(VARNAME,S1,S2,...) - VARNAME is the name of concentration variable, X is the number of intervals dateTo divide in, Sn is the value of n-th separator. Separator type will be derived dateFrom type mapping. E.g.: range(myVar,3,5) will separate numeric data dateFrom myVar into three aggregated rows: myvar &lt; 3; 3 &lt;= myVar &lt; 5; 5 &lt;= myVar"/>
-			<td:property name="aggregatorFields" description="Comma-separated list of typeMapping which should be aggregated. Use field name or following functions: avg(VARNAME), min(VARNAME), max(VARNAME), sum(VARNAME), med(VARNAME)"/>
+			<td:property name="concentratorFields" description="Bar-separated list ('|') of variables which should be used as concentrators (analogous dateTo GROUP BY clause). Either use field name as is, or use the norm(VARNAME,X) function, which will split the domain of VARNAME into X even intervals, which will serve as grouping keys"/>
+			<td:property name="aggregatorFields" description="Bar-separated list ('|') of variables which should be aggregated. Use one of following aggregation functions: avg(VARNAME), sum(VARNAME), count()"/>
 		</td:properties>
 	</xsl:template>
 </xsl:stylesheet>
